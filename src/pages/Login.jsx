@@ -29,7 +29,7 @@ export default class Login extends Component {
 
   render() {
     const { nameInput, loading } = this.state;
-    const minCaracAllowed = 3;
+    const minCharacAllowed = 3;
 
     return (
       <div data-testid="page-login">
@@ -50,7 +50,7 @@ export default class Login extends Component {
               <button
                 type="button"
                 data-testid="login-submit-button"
-                disabled={ nameInput.length < minCaracAllowed }
+                disabled={ nameInput.length < minCharacAllowed }
                 onClick={ this.handleClick }
               >
                 Entrar
