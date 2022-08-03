@@ -10,7 +10,7 @@ export default class Header extends Component {
   }
 
   componentDidMount = async () => {
-    await this.setState({
+    this.setState({
       loading: true,
     });
     const user = await getUser();
