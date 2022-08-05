@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import Header from '../components/Header';
 import getMusics from '../services/musicsAPI';
 import MusicCard from '../components/MusicCard';
+import { addSong, getFavoriteSongs, removeSong } from '../services/favoriteSongsAPI';
+import Loading from '../components/Loading';
 
 export default class Album extends Component {
   state = {
@@ -10,12 +12,21 @@ export default class Album extends Component {
     albumTitle: '',
     artistName: '',
     albumImage: '',
+    loading: false,
+  }
+
+  retrieveFavorites = async () => {
+    this.setState({ loading: true });
+    const favoriteSongs = await getFavoriteSongs();
+    this.setState({
+      favLocalStorage: favoriteSongs,
+      loading: false,
+    });
   }
 
   componentDidMount = async () => {
     const { match } = this.props;
-    const { params } = match;
-    const { id } = params;
+    const { id } = match.params;
     const [info, ...content] = await getMusics(id);
     this.setState({
       albumInfo: content,
@@ -26,23 +37,43 @@ export default class Album extends Component {
         albumImage: info.artworkUrl100,
       });
     });
+    this.retrieveFavorites();
+  }
+
+  updateFavorites = async (target) => {
+    this.retrieveFavorites();
+    const { favLocalStorage } = this.state;
+    const isSaved = favLocalStorage.some((song) => song.trackId === target.trackId);
+    console.log(isSaved);
+    if (isSaved === true) {
+      await removeSong(target);
+    } else {
+      await addSong(target);
+    }
   }
 
   render() {
-    const { albumTitle, artistName, albumImage, albumInfo } = this.state;
+    const { albumTitle, artistName, albumImage,
+      albumInfo, loading } = this.state;
     return (
       <div data-testid="page-album">
         <Header />
         <img src={ albumImage } alt="" />
         <p data-testid="artist-name">{ artistName }</p>
         <p data-testid="album-name">{ albumTitle }</p>
-        { albumInfo.map((e) => (
-          <MusicCard
-            trackName={ e.trackName }
-            previewURL={ e.previewUrl }
-            key={ e.trackId }
-          />
-        ))}
+        { loading
+          ? <Loading />
+          : (
+            albumInfo.map((e) => (
+              <MusicCard
+                entireObj={ e }
+                trackName={ e.trackName }
+                previewURL={ e.previewUrl }
+                key={ e.trackId }
+                trackId={ e.trackId }
+                onChange={ () => this.updateFavorites(e) }
+              />
+            )))}
       </div>
     );
   }
