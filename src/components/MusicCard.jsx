@@ -9,6 +9,7 @@ export default class MusicCard extends Component {
 
   render() {
     const { trackName, previewURL, trackId, onChange } = this.props;
+
     return (
       <div>
         <section>
@@ -18,13 +19,15 @@ export default class MusicCard extends Component {
             O seu navegador não suporta o elemento
             <code>audio</code>
           </audio>
-          <label htmlFor="favorite">
+          <label
+            htmlFor={ `trackId ${trackId}` }
+            data-testid={ `checkbox-music-${trackId}` }
+          >
             Favorita
             <input
-              data-testid={ `checkbox-music-${trackId}` }
               type="checkbox"
               name="favorite"
-              id="favorite"
+              id={ `trackId ${trackId}` }
               trackid={ trackId }
               onChange={ onChange }
               checked={ this.checkFavorites(trackId) }
