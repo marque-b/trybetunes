@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 export default class MusicCard extends Component {
   checkFavorites = (trackId) => {
     const { favorited } = this.props;
-    console.log(favorited);
     return favorited.some((song) => trackId === song.trackId);
   }
 
@@ -42,4 +41,6 @@ MusicCard.propTypes = {
   previewURL: PropTypes.string.isRequired,
   trackId: PropTypes.number.isRequired,
   onChange: PropTypes.func.isRequired,
+  favorited: PropTypes.shape([]).isRequired,
+  some: PropTypes.func.isRequired,
 };
