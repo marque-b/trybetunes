@@ -1,32 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { getFavoriteSongs } from '../services/favoriteSongsAPI';
-import Loading from './Loading';
 
 export default class MusicCard extends Component {
-  state = {
-    favLocalStorage: [],
-  }
-
-  retrieveFavorites = async () => {
-    const favoriteSongs = await getFavoriteSongs();
-    this.setState({
-      favLocalStorage: favoriteSongs,
-    });
-  }
-
   checkFavorites = (trackId) => {
-    const { favLocalStorage } = this.state;
-    return favLocalStorage.some((song) => trackId === song.trackId);
-  }
-
-  componentDidMount = () => {
-    this.retrieveFavorites();
+    const { favorited } = this.props;
+    console.log(favorited);
+    return favorited.some((song) => trackId === song.trackId);
   }
 
   render() {
     const { trackName, previewURL, trackId, onChange } = this.props;
-    const { loading } = this.state;
     return (
       <div>
         <section>
@@ -36,21 +19,18 @@ export default class MusicCard extends Component {
             O seu navegador não suporta o elemento
             <code>audio</code>
           </audio>
-          { loading
-            ? <Loading />
-            : (
-              <label htmlFor="favorite" data-testid={ `checkbox-music-${trackId}` }>
-                Favorita
-                <input
-                  type="checkbox"
-                  name="favorite"
-                  id="favorite"
-                  trackid={ trackId }
-                  onChange={ onChange }
-                  checked={ this.checkFavorites(trackId) }
-                />
-              </label>
-            )}
+          <label htmlFor="favorite">
+            Favorita
+            <input
+              data-testid={ `checkbox-music-${trackId}` }
+              type="checkbox"
+              name="favorite"
+              id="favorite"
+              trackid={ trackId }
+              onChange={ onChange }
+              checked={ this.checkFavorites(trackId) }
+            />
+          </label>
         </section>
       </div>
     );

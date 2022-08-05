@@ -72,7 +72,6 @@ describe('10 - Faça a requisição para recuperar as músicas favoritas e atual
         () => expect(screen.queryAllByText('Carregando...')).toHaveLength(0),
         { timeout: 3000 }
       );
-
       expect(screen.queryAllByRole('checkbox', { checked: true })).toHaveLength(2);
       expect(screen.queryAllByRole('checkbox', { checked: false })).toHaveLength(2);
 
