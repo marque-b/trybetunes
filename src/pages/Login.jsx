@@ -1,7 +1,18 @@
 import React, { Component } from 'react';
+import Button from '@mui/material/Button';
 import PropTypes from 'prop-types';
+import AudiotrackIcon from '@mui/icons-material/Audiotrack';
+import TextField from '@mui/material/TextField';
+import { Stack } from '@mui/material';
 import { createUser } from '../services/userAPI';
 import Loading from '../components/Loading';
+import {
+  CustomContentLogin,
+  CustomAssideLogin,
+  CustomFormLogin,
+  CustomImageLogin,
+  CustomLogoImg,
+} from '../styles/login';
 
 export default class Login extends Component {
   state = {
@@ -16,10 +27,10 @@ export default class Login extends Component {
     });
   }
 
-  handleClick = async () => {
+  handleClick = () => {
     const { history } = this.props;
     const { nameInput } = this.state;
-    await this.setState({
+    this.setState({
       loading: true,
     }, async () => {
       await createUser({ name: nameInput });
@@ -32,32 +43,48 @@ export default class Login extends Component {
     const minCharacAllowed = 3;
 
     return (
-      <div data-testid="page-login">
+      <CustomContentLogin data-testid="page-login">
 
-        { loading
-          ? <Loading />
-          : (
-            <form>
-              <label htmlFor="login-name-input">
-                Name
-                <input
-                  type="text"
+        <CustomAssideLogin>
+          <CustomImageLogin
+            src="/assets/hands-in-the-air.jpg"
+            alt="Great music throwing hands in the air"
+          />
+        </CustomAssideLogin>
+
+        <CustomFormLogin>
+          <CustomLogoImg
+            src="/assets/logo.png"
+            alt="logo"
+          />
+          { loading
+            ? <Loading />
+            : (
+              <Stack spacing={ 2 }>
+                <TextField
+                  id="outlined-search"
+                  label="User"
+                  size="small"
                   data-testid="login-name-input"
                   onChange={ this.updateName }
                 />
-              </label>
+                <Button
+                  id="login-name-input"
+                  type="button"
+                  data-testid="login-submit-button"
+                  disabled={ nameInput.length < minCharacAllowed }
+                  onClick={ this.handleClick }
+                  variant="contained"
+                  endIcon={ <AudiotrackIcon /> }
+                  size="large"
+                >
+                  Entrar
+                </Button>
+              </Stack>
+            )}
+        </CustomFormLogin>
 
-              <button
-                type="button"
-                data-testid="login-submit-button"
-                disabled={ nameInput.length < minCharacAllowed }
-                onClick={ this.handleClick }
-              >
-                Entrar
-              </button>
-            </form>)}
-
-      </div>
+      </CustomContentLogin>
     );
   }
 }
